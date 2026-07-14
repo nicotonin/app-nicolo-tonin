@@ -1,20 +1,54 @@
 {
   "info": {
-    "name": "App Sport API",
+    "name": "ESAME-ITS-2026-NICOLO-TONIN",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     { "key": "baseurl", "value": "http://localhost:3000/api" },
-    { "key": "token", "value": "" },
-    { "key": "teamId", "value": "" },
-    { "key": "atletaId", "value": "" },
-    { "key": "atletaName", "value": "" },
-    { "key": "atletaLastName", "value": "" }
+    { "key": "tokenReferente", "value": "" },
+    { "key": "tokenDipendente", "value": "" },
+    { "key": "tokenNonValido", "value": "Bearer_nOn_VaLiDo_123" },
+    { "key": "passwordReferente", "value": "Password123!" },
+    { "key": "passwordDipendente", "value": "Password123!" },
+    { "key": "passwordErrante", "value": "WrongPass1!" },
+    { "key": "passwordDebole", "value": "weak" },
+    { "key": "corsoId", "value": "" },
+    { "key": "corsoId2", "value": "" },
+    { "key": "assegnazioneId", "value": "" },
+    { "key": "dipendenteId", "value": "" },
+    { "key": "referenteId", "value": "" }
   ],
   "item": [
     {
       "name": "Auth",
       "item": [
+        {
+          "name": "Register - Referente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', () => { pm.response.to.have.status(201); });",
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('referenteId', json.id || json._id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Laura\",\n  \"lastName\": \"Bianchi\",\n  \"email\": \"laura.bianchi@azienda.it\",\n  \"role\": \"referente\",\n  \"password\": \"{{passwordReferente}}\",\n  \"confirmPassword\": \"{{passwordReferente}}\"\n}"
+            },
+            "url": "{{baseurl}}/auth/register"
+          }
+        },
         {
           "name": "Register - Dipendente",
           "event": [
@@ -24,7 +58,7 @@
                 "exec": [
                   "pm.test('Status code is 201', () => { pm.response.to.have.status(201); });",
                   "const json = pm.response.json();",
-                  "pm.collectionVariables.set('userId_dipendente', json.id || json._id);"
+                  "pm.collectionVariables.set('dipendenteId', json.id || json._id);"
                 ],
                 "type": "text/javascript"
               }
@@ -37,34 +71,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Mario\",\n  \"lastName\": \"Rossi\",\n  \"email\": \"mario.rossi@azienda.it\",\n  \"role\": \"dipendente\",\n  \"password\": \"Password123!\"\n}"
-            },
-            "url": "{{baseurl}}/auth/register"
-          }
-        },
-        {
-          "name": "Register - Responsabile",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 201', () => { pm.response.to.have.status(201); });",
-                  "const json = pm.response.json();",
-                  "pm.collectionVariables.set('userId_responsabile', json.id || json._id);"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Laura\",\n  \"lastName\": \"Bianchi\",\n  \"email\": \"laura.bianchi@azienda.it\",\n  \"role\": \"responsabile\",\n  \"password\": \"Password123!\"\n}"
+              "raw": "{\n  \"firstName\": \"Mario\",\n  \"lastName\": \"Rossi\",\n  \"email\": \"mario.rossi@azienda.it\",\n  \"role\": \"dipendente\",\n  \"password\": \"{{passwordReferente}}\",\n  \"confirmPassword\": \"{{passwordReferente}}\"\n}"
             },
             "url": "{{baseurl}}/auth/register"
           }
@@ -92,7 +99,34 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Mario123\",\n  \"lastName\": \"\",\n  \"email\": \"non-email\",\n  \"role\": \"\",\n  \"password\": \"weak\"\n}"
+              "raw": "{\n  \"firstName\": \"Mario123\",\n  \"lastName\": \"\",\n  \"email\": \"non-email\",\n  \"role\": \"admin\",\n  \"password\": \"{{passwordDebole}}\",\n  \"confirmPassword\": \"{{passwordDebole}}\"\n}"
+            },
+            "url": "{{baseurl}}/auth/register"
+          }
+        },
+        {
+          "name": "Register - PasswordMismatch",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', () => { pm.response.to.have.status(400); });",
+                  "const json = pm.response.json();",
+                  "pm.test('Error is ValidationError', () => { pm.expect(json.error).to.eql('ValidationError'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Luigi\",\n  \"lastName\": \"Verdi\",\n  \"email\": \"luigi.verdi@azienda.it\",\n  \"role\": \"dipendente\",\n  \"password\": \"{{passwordReferente}}\",\n  \"confirmPassword\": \"{{passwordDipendente}}\"\n}"
             },
             "url": "{{baseurl}}/auth/register"
           }
@@ -106,8 +140,7 @@
                 "exec": [
                   "pm.test('Status code is 400', () => { pm.response.to.have.status(400); });",
                   "const json = pm.response.json();",
-                  "pm.test('Error is UserExists', () => { pm.expect(json.error).to.eql('UserExists'); });",
-                  "pm.test('Message is username already in use', () => { pm.expect(json.message).to.eql('username already in use'); });"
+                  "pm.test('Error is UserExists', () => { pm.expect(json.error).to.eql('UserExists'); });"
                 ],
                 "type": "text/javascript"
               }
@@ -120,9 +153,37 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Mario\",\n  \"lastName\": \"Rossi\",\n  \"email\": \"mario.rossi@azienda.it\",\n  \"role\": \"dipendente\",\n  \"password\": \"Password123!\"\n}"
+              "raw": "{\n  \"firstName\": \"Mario\",\n  \"lastName\": \"Rossi\",\n  \"email\": \"mario.rossi@azienda.it\",\n  \"role\": \"dipendente\",\n  \"password\": \"{{passwordReferente}}\",\n  \"confirmPassword\": \"{{passwordReferente}}\"\n}"
             },
             "url": "{{baseurl}}/auth/register"
+          }
+        },
+        {
+          "name": "Login - Referente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.test('Has token', () => { pm.expect(json).to.have.property('token'); });",
+                  "pm.collectionVariables.set('tokenReferente', json.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"laura.bianchi@azienda.it\",\n  \"password\": \"{{passwordReferente}}\"\n}"
+            },
+            "url": "{{baseurl}}/auth/login"
           }
         },
         {
@@ -135,7 +196,7 @@
                   "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
                   "const json = pm.response.json();",
                   "pm.test('Has token', () => { pm.expect(json).to.have.property('token'); });",
-                  "pm.collectionVariables.set('token', json.token);"
+                  "pm.collectionVariables.set('tokenDipendente', json.token);"
                 ],
                 "type": "text/javascript"
               }
@@ -148,35 +209,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"mario.rossi@azienda.it\",\n  \"password\": \"Password123!\"\n}"
-            },
-            "url": "{{baseurl}}/auth/login"
-          }
-        },
-        {
-          "name": "Login - Responsabile",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
-                  "const json = pm.response.json();",
-                  "pm.test('Has token', () => { pm.expect(json).to.have.property('token'); });",
-                  "pm.collectionVariables.set('token', json.token);"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"laura.bianchi@azienda.it\",\n  \"password\": \"Password123!\"\n}"
+              "raw": "{\n  \"email\": \"mario.rossi@azienda.it\",\n  \"password\": \"{{passwordReferente}}\"\n}"
             },
             "url": "{{baseurl}}/auth/login"
           }
@@ -190,8 +223,7 @@
                 "exec": [
                   "pm.test('Status code is 400', () => { pm.response.to.have.status(400); });",
                   "const json = pm.response.json();",
-                  "pm.test('Error is LoginError', () => { pm.expect(json.error).to.eql('LoginError'); });",
-                  "pm.test('Message is invalid email', () => { pm.expect(json.message).to.eql('invalid email'); });"
+                  "pm.test('Error is LoginError', () => { pm.expect(json.error).to.eql('LoginError'); });"
                 ],
                 "type": "text/javascript"
               }
@@ -204,7 +236,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"inesistente@azienda.it\",\n  \"password\": \"Password123!\"\n}"
+              "raw": "{\n  \"email\": \"inesistente@azienda.it\",\n  \"password\": \"{{passwordReferente}}\"\n}"
             },
             "url": "{{baseurl}}/auth/login"
           }
@@ -218,8 +250,7 @@
                 "exec": [
                   "pm.test('Status code is 400', () => { pm.response.to.have.status(400); });",
                   "const json = pm.response.json();",
-                  "pm.test('Error is LoginError', () => { pm.expect(json.error).to.eql('LoginError'); });",
-                  "pm.test('Message is password supplied', () => { pm.expect(json.message).to.eql('password supplied'); });"
+                  "pm.test('Error is LoginError', () => { pm.expect(json.error).to.eql('LoginError'); });"
                 ],
                 "type": "text/javascript"
               }
@@ -232,7 +263,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"mario.rossi@azienda.it\",\n  \"password\": \"WrongPass1!\"\n}"
+              "raw": "{\n  \"email\": \"mario.rossi@azienda.it\",\n  \"password\": \"{{passwordErrante}}\"\n}"
             },
             "url": "{{baseurl}}/auth/login"
           }
@@ -240,10 +271,10 @@
       ]
     },
     {
-      "name": "Teams",
+      "name": "Corsi",
       "item": [
         {
-          "name": "Create Team",
+          "name": "Create Corso - Sicurezza",
           "event": [
             {
               "listen": "test",
@@ -251,7 +282,7 @@
                 "exec": [
                   "pm.test('Status code is 201', () => { pm.response.to.have.status(201); });",
                   "const json = pm.response.json();",
-                  "pm.collectionVariables.set('teamId', json.id || json._id);"
+                  "pm.collectionVariables.set('corsoId', json.id || json._id);"
                 ],
                 "type": "text/javascript"
               }
@@ -261,25 +292,25 @@
             "method": "POST",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Squadra Rossa\",\n  \"categoria\": \"Serie A\"\n}"
+              "raw": "{\n  \"titolo\": \"Corso Antincendio Base\",\n  \"descrizione\": \"Formazione obbligatoria antincendio per tutti i dipendenti\",\n  \"categoria\": \"Sicurezza\",\n  \"durata\": 8,\n  \"obbligatorio\": true,\n  \"attivo\": true\n}"
             },
-            "url": "{{baseurl}}/teams"
+            "url": "{{baseurl}}/corsis"
           }
         },
         {
-          "name": "Create Team - ValidationError",
+          "name": "Create Corso - Informatica",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status code is 400', () => { pm.response.to.have.status(400); });",
+                  "pm.test('Status code is 201', () => { pm.response.to.have.status(201); });",
                   "const json = pm.response.json();",
-                  "pm.test('Error is ValidationError', () => { pm.expect(json.error).to.eql('ValidationError'); });"
+                  "pm.collectionVariables.set('corsoId2', json.id || json._id);"
                 ],
                 "type": "text/javascript"
               }
@@ -289,17 +320,45 @@
             "method": "POST",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"\"\n}"
+              "raw": "{\n  \"titolo\": \"Excel Avanzato\",\n  \"descrizione\": \"Corso di Excel con formule avanzate e pivot\",\n  \"categoria\": \"Informatica\",\n  \"durata\": 16,\n  \"obbligatorio\": false,\n  \"attivo\": true\n}"
             },
-            "url": "{{baseurl}}/teams"
+            "url": "{{baseurl}}/corsis"
           }
         },
         {
-          "name": "List Teams",
+          "name": "Create Corso - Inattivo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', () => { pm.response.to.have.status(201); });",
+                  "const json = pm.response.json();",
+                  "pm.test('attivo is false', () => { pm.expect(json.attivo).to.eql(false); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titolo\": \"Corso Obsoleto\",\n  \"descrizione\": \"Corso non più attivo\",\n  \"categoria\": \"Soft Skills\",\n  \"durata\": 4,\n  \"obbligatorio\": false,\n  \"attivo\": false\n}"
+            },
+            "url": "{{baseurl}}/corsis"
+          }
+        },
+        {
+          "name": "List Corsi",
           "event": [
             {
               "listen": "test",
@@ -315,13 +374,62 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
-            "url": "{{baseurl}}/teams"
+            "url": "{{baseurl}}/corsis"
           }
         },
         {
-          "name": "Get Team",
+          "name": "List Corsi - Filter by categoria",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
+                  "pm.test('Response is an array', () => { pm.expect(pm.response.json()).to.be.an('array'); });",
+                  "pm.test('All items have categoria Sicurezza', () => {",
+                  "  pm.response.json().forEach(item => { pm.expect(item.categoria).to.eql('Sicurezza'); });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
+            ],
+            "url": "{{baseurl}}/corsis?categoria=Sicurezza"
+          }
+        },
+        {
+          "name": "List Corsi - Filter by attivo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
+                  "pm.test('All items are active', () => {",
+                  "  pm.response.json().forEach(item => { pm.expect(item.attivo).to.eql(true); });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
+            ],
+            "url": "{{baseurl}}/corsis?attivo=true"
+          }
+        },
+        {
+          "name": "Get Corso",
           "event": [
             {
               "listen": "test",
@@ -329,8 +437,7 @@
                 "exec": [
                   "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
                   "const json = pm.response.json();",
-                  "pm.test('Has name', () => { pm.expect(json).to.have.property('name'); });",
-                  "pm.test('Has categoria', () => { pm.expect(json).to.have.property('categoria'); });"
+                  "pm.test('Has titolo', () => { pm.expect(json).to.have.property('titolo'); });"
                 ],
                 "type": "text/javascript"
               }
@@ -339,13 +446,13 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
-            "url": "{{baseurl}}/teams/{{teamId}}"
+            "url": "{{baseurl}}/corsis/{{corsoId}}"
           }
         },
         {
-          "name": "Get Team - NotFound",
+          "name": "Get Corso - NotFound",
           "event": [
             {
               "listen": "test",
@@ -360,19 +467,21 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
-            "url": "{{baseurl}}/teams/000000000000000000000000"
+            "url": "{{baseurl}}/corsis/000000000000000000000000"
           }
         },
         {
-          "name": "Update Team",
+          "name": "Update Corso",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });"
+                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.test('Titolo updated', () => { pm.expect(json.titolo).to.eql('Corso Antincendio Avanzato'); });"
                 ],
                 "type": "text/javascript"
               }
@@ -382,17 +491,17 @@
             "method": "PUT",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Squadra Blu\",\n  \"categoria\": \"Serie B\"\n}"
+              "raw": "{\n  \"titolo\": \"Corso Antincendio Avanzato\",\n  \"durata\": 12\n}"
             },
-            "url": "{{baseurl}}/teams/{{teamId}}"
+            "url": "{{baseurl}}/corsis/{{corsoId}}"
           }
         },
         {
-          "name": "Update Team - ValidationError",
+          "name": "Update Corso - ValidationError",
           "event": [
             {
               "listen": "test",
@@ -410,43 +519,72 @@
             "method": "PUT",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": 123\n}"
+              "raw": "{\n  \"durata\": -5\n}"
             },
-            "url": "{{baseurl}}/teams/{{teamId}}"
+            "url": "{{baseurl}}/corsis/{{corsoId}}"
           }
         },
         {
-          "name": "Delete Team - NotFound",
+          "name": "Disattiva Corso",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status code is 404', () => { pm.response.to.have.status(404); });"
+                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.test('attivo is false', () => { pm.expect(json.attivo).to.eql(false); });"
                 ],
                 "type": "text/javascript"
               }
             }
           ],
           "request": {
-            "method": "DELETE",
+            "method": "PUT",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
-            "url": "{{baseurl}}/teams/000000000000000000000000"
+            "url": "{{baseurl}}/corsis/{{corsoId2}}/disattiva"
+          }
+        },
+        {
+          "name": "Create Corso - Forbidden (Dipendente)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 403', () => { pm.response.to.have.status(403); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{tokenDipendente}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titolo\": \"Non Autorizzato\",\n  \"descrizione\": \"Test\",\n  \"categoria\": \"Informatica\",\n  \"durata\": 4,\n  \"obbligatorio\": false,\n  \"attivo\": true\n}"
+            },
+            "url": "{{baseurl}}/corsis"
           }
         }
       ]
     },
     {
-      "name": "Atleti",
+      "name": "Assegnazioni",
       "item": [
         {
-          "name": "Create Atleta",
+          "name": "Create Assegnazione",
           "event": [
             {
               "listen": "test",
@@ -454,9 +592,7 @@
                 "exec": [
                   "pm.test('Status code is 201', () => { pm.response.to.have.status(201); });",
                   "const json = pm.response.json();",
-                  "pm.collectionVariables.set('atletaId', json.id || json._id);",
-                  "pm.collectionVariables.set('atletaName', json.name);",
-                  "pm.collectionVariables.set('atletaLastName', json.lastName);"
+                  "pm.collectionVariables.set('assegnazioneId', json.id || json._id);"
                 ],
                 "type": "text/javascript"
               }
@@ -466,17 +602,17 @@
             "method": "POST",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Marco\",\n  \"lastName\": \"Verdi\",\n  \"dataDiNascita\": \"2000-05-15T00:00:00.000Z\",\n  \"altezza\": 185,\n  \"peso\": 78,\n  \"ruolo\": \"Attaccante\",\n  \"teamId\": \"{{teamId}}\"\n}"
+              "raw": "{\n  \"corsoId\": \"{{corsoId}}\",\n  \"dipendenteId\": \"{{dipendenteId}}\",\n  \"dataAssegnazione\": \"2026-06-01T00:00:00.000Z\",\n  \"dataScadenza\": \"2026-08-31T00:00:00.000Z\",\n  \"stato\": \"assegnato\"\n}"
             },
-            "url": "{{baseurl}}/atletis"
+            "url": "{{baseurl}}/assegnazioni"
           }
         },
         {
-          "name": "Create Atleta - ValidationError",
+          "name": "Create Assegnazione - CorsoInattivo",
           "event": [
             {
               "listen": "test",
@@ -484,7 +620,7 @@
                 "exec": [
                   "pm.test('Status code is 400', () => { pm.response.to.have.status(400); });",
                   "const json = pm.response.json();",
-                  "pm.test('Error is ValidationError', () => { pm.expect(json.error).to.eql('ValidationError'); });"
+                  "pm.test('Error is BadRequestError', () => { pm.expect(json.error).to.eql('BadRequestError'); });"
                 ],
                 "type": "text/javascript"
               }
@@ -494,17 +630,71 @@
             "method": "POST",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"\",\n  \"lastName\": \"\",\n  \"altezza\": \"non-un-numero\"\n}"
+              "raw": "{\n  \"corsoId\": \"{{corsoId2}}\",\n  \"dipendenteId\": \"{{dipendenteId}}\",\n  \"dataAssegnazione\": \"2026-06-01T00:00:00.000Z\",\n  \"dataScadenza\": \"2026-08-31T00:00:00.000Z\",\n  \"stato\": \"assegnato\"\n}"
             },
-            "url": "{{baseurl}}/atletis"
+            "url": "{{baseurl}}/assegnazioni"
           }
         },
         {
-          "name": "List Atleti",
+          "name": "Create Assegnazione - DateInvalid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', () => { pm.response.to.have.status(400); });",
+                  "const json = pm.response.json();",
+                  "pm.test('Error is BadRequestError', () => { pm.expect(json.error).to.eql('BadRequestError'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"corsoId\": \"{{corsoId}}\",\n  \"dipendenteId\": \"{{dipendenteId}}\",\n  \"dataAssegnazione\": \"2026-08-01T00:00:00.000Z\",\n  \"dataScadenza\": \"2026-06-30T00:00:00.000Z\",\n  \"stato\": \"assegnato\"\n}"
+            },
+            "url": "{{baseurl}}/assegnazioni"
+          }
+        },
+        {
+          "name": "Create Assegnazione - Forbidden (Dipendente)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 403', () => { pm.response.to.have.status(403); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{tokenDipendente}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"corsoId\": \"{{corsoId}}\",\n  \"dipendenteId\": \"{{dipendenteId}}\",\n  \"dataAssegnazione\": \"2026-06-01T00:00:00.000Z\",\n  \"dataScadenza\": \"2026-08-31T00:00:00.000Z\",\n  \"stato\": \"assegnato\"\n}"
+            },
+            "url": "{{baseurl}}/assegnazioni"
+          }
+        },
+        {
+          "name": "List Assegnazioni (Referente)",
           "event": [
             {
               "listen": "test",
@@ -520,13 +710,38 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
-            "url": "{{baseurl}}/atletis"
+            "url": "{{baseurl}}/assegnazioni"
           }
         },
         {
-          "name": "Get Atleta",
+          "name": "List Assegnazioni (Dipendente - solo sue)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
+                  "pm.test('Response is an array', () => { pm.expect(pm.response.json()).to.be.an('array'); });",
+                  "pm.test('All assignments belong to dipendente', () => {",
+                  "  pm.response.json().forEach(a => { pm.expect(a.dipendenteId).to.eql(pm.collectionVariables.get('dipendenteId')); });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{tokenDipendente}}" }
+            ],
+            "url": "{{baseurl}}/assegnazioni"
+          }
+        },
+        {
+          "name": "Get Assegnazione",
           "event": [
             {
               "listen": "test",
@@ -534,8 +749,7 @@
                 "exec": [
                   "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
                   "const json = pm.response.json();",
-                  "pm.test('Has name', () => { pm.expect(json).to.have.property('name'); });",
-                  "pm.test('Has lastName', () => { pm.expect(json).to.have.property('lastName'); });"
+                  "pm.test('Has corsoId', () => { pm.expect(json).to.have.property('corsoId'); });"
                 ],
                 "type": "text/javascript"
               }
@@ -544,40 +758,22 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
-            "url": "{{baseurl}}/atletis/{{atletaId}}"
+            "url": "{{baseurl}}/assegnazioni/{{assegnazioneId}}"
           }
         },
         {
-          "name": "Get Atleta - NotFound",
+          "name": "Completa Assegnazione (Dipendente)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status code is 404', () => { pm.response.to.have.status(404); });"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "url": "{{baseurl}}/atletis/000000000000000000000000"
-          }
-        },
-        {
-          "name": "Update Atleta",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });"
+                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.test('Stato is completato', () => { pm.expect(json.stato).to.eql('completato'); });",
+                  "pm.test('Has completion date', () => { pm.expect(json).to.have.property('dataCompletamento'); });"
                 ],
                 "type": "text/javascript"
               }
@@ -586,18 +782,13 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenDipendente}}" }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"peso\": 80\n}"
-            },
-            "url": "{{baseurl}}/atletis/{{atletaId}}"
+            "url": "{{baseurl}}/assegnazioni/{{assegnazioneId}}/completa"
           }
         },
         {
-          "name": "Update Atleta - ValidationError",
+          "name": "Completa Assegnazione - AlreadyCompleted",
           "event": [
             {
               "listen": "test",
@@ -605,7 +796,53 @@
                 "exec": [
                   "pm.test('Status code is 400', () => { pm.response.to.have.status(400); });",
                   "const json = pm.response.json();",
-                  "pm.test('Error is ValidationError', () => { pm.expect(json.error).to.eql('ValidationError'); });"
+                  "pm.test('Error is BadRequestError', () => { pm.expect(json.error).to.eql('BadRequestError'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{tokenDipendente}}" }
+            ],
+            "url": "{{baseurl}}/assegnazioni/{{assegnazioneId}}/completa"
+          }
+        },
+        {
+          "name": "Completa Assegnazione - NotOwn (Dipendente prova altro)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', () => { pm.response.to.have.status(400); });",
+                  "const json = pm.response.json();",
+                  "pm.test('Error is BadRequestError', () => { pm.expect(json.error).to.eql('BadRequestError'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{tokenDipendente}}" }
+            ],
+            "url": "{{baseurl}}/assegnazioni/000000000000000000000000/completa"
+          }
+        },
+        {
+          "name": "Annulla Assegnazione (Referente)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.test('Stato is annullato', () => { pm.expect(json.stato).to.eql('annullato'); });"
                 ],
                 "type": "text/javascript"
               }
@@ -615,49 +852,50 @@
             "method": "PUT",
             "header": [
               { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"altezza\": \"non-un-numero\"\n}"
+              "raw": ""
             },
-            "url": "{{baseurl}}/atletis/{{atletaId}}"
+            "url": "{{baseurl}}/assegnazioni/{{assegnazioneId}}/annulla"
           }
         },
         {
-          "name": "Delete Atleta - NotFound",
+          "name": "Annulla Assegnazione - AlreadyTerminal",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status code is 404', () => { pm.response.to.have.status(404); });"
+                  "pm.test('Status code is 400', () => { pm.response.to.have.status(400); });"
                 ],
                 "type": "text/javascript"
               }
             }
           ],
           "request": {
-            "method": "DELETE",
+            "method": "PUT",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
-            "url": "{{baseurl}}/atletis/000000000000000000000000"
+            "url": "{{baseurl}}/assegnazioni/{{assegnazioneId}}/annulla"
           }
         }
       ]
     },
     {
-      "name": "Anayltics",
+      "name": "Analytics",
       "item": [
         {
-          "name": "Youngest",
+          "name": "Riepilogo - No Filters",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });"
+                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
+                  "pm.test('Response is an array', () => { pm.expect(pm.response.json()).to.be.an('array'); });"
                 ],
                 "type": "text/javascript"
               }
@@ -666,21 +904,20 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
-            "url": "{{baseurl}}/anaylticss/youngest"
+            "url": "{{baseurl}}/analytics/riepilogo"
           }
         },
         {
-          "name": "Avg Weight",
+          "name": "Riepilogo - Filter by mese",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
                   "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
-                  "const json = pm.response.json();",
-                  "pm.test('Has avg property', () => { pm.expect(json).to.have.property('avg'); });"
+                  "pm.test('Response is an array', () => { pm.expect(pm.response.json()).to.be.an('array'); });"
                 ],
                 "type": "text/javascript"
               }
@@ -689,21 +926,20 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
-            "url": "{{baseurl}}/anaylticss/avg-weight"
+            "url": "{{baseurl}}/analytics/riepilogo?mese=2026-06"
           }
         },
         {
-          "name": "Avg Height",
+          "name": "Riepilogo - Filter by categoria",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
                   "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
-                  "const json = pm.response.json();",
-                  "pm.test('Has avg property', () => { pm.expect(json).to.have.property('avg'); });"
+                  "pm.test('Response is an array', () => { pm.expect(pm.response.json()).to.be.an('array'); });"
                 ],
                 "type": "text/javascript"
               }
@@ -712,68 +948,34 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
-            "url": "{{baseurl}}/anaylticss/avg-height"
+            "url": "{{baseurl}}/analytics/riepilogo?categoria=Sicurezza"
           }
         },
         {
-          "name": "By Name",
+          "name": "Riepilogo - Forbidden (Dipendente)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
-                  "const json = pm.response.json();",
-                  "pm.test('Has name', () => { pm.expect(json).to.have.property('name'); });",
-                  "pm.test('Has categoria', () => { pm.expect(json).to.have.property('categoria'); });"
+                  "pm.test('Status code is 403', () => { pm.response.to.have.status(403); });"
                 ],
                 "type": "text/javascript"
               }
             }
           ],
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenDipendente}}" }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"{{atletaName}}\",\n  \"lastName\": \"{{atletaLastName}}\"\n}"
-            },
-            "url": "{{baseurl}}/anaylticss/by-name"
+            "url": "{{baseurl}}/analytics/riepilogo"
           }
         },
         {
-          "name": "By Name - NotFound",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 404', () => { pm.response.to.have.status(404); });"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"NomeInesistente\",\n  \"lastName\": \"CognomeInesistente\"\n}"
-            },
-            "url": "{{baseurl}}/anaylticss/by-name"
-          }
-        },
-        {
-          "name": "By Name - ValidationError",
+          "name": "Riepilogo - ValidationError (mese errato)",
           "event": [
             {
               "listen": "test",
@@ -788,16 +990,11 @@
             }
           ],
           "request": {
-            "method": "POST",
+            "method": "GET",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"\"\n}"
-            },
-            "url": "{{baseurl}}/anaylticss/by-name"
+            "url": "{{baseurl}}/analytics/riepilogo?mese=invalid"
           }
         }
       ]
@@ -806,7 +1003,7 @@
       "name": "Users",
       "item": [
         {
-          "name": "List Users",
+          "name": "List Users (Referente)",
           "event": [
             {
               "listen": "test",
@@ -822,9 +1019,30 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
             "url": "{{baseurl}}/users?role=dipendente"
+          }
+        },
+        {
+          "name": "List Users - Forbidden (Dipendente)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 403', () => { pm.response.to.have.status(403); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{tokenDipendente}}" }
+            ],
+            "url": "{{baseurl}}/users"
           }
         },
         {
@@ -845,56 +1063,9 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
             "url": "{{baseurl}}/users?role=admin"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Cleanup",
-      "item": [
-        {
-          "name": "Delete Atleta",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "url": "{{baseurl}}/atletis/{{atletaId}}"
-          }
-        },
-        {
-          "name": "Delete Team",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
-            "url": "{{baseurl}}/teams/{{teamId}}"
           }
         }
       ]
@@ -903,7 +1074,7 @@
       "name": "Auth - Unauthorized",
       "item": [
         {
-          "name": "List Teams - NoToken",
+          "name": "List Corsi - NoToken",
           "event": [
             {
               "listen": "test",
@@ -918,11 +1089,11 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseurl}}/teams"
+            "url": "{{baseurl}}/corsis"
           }
         },
         {
-          "name": "List Teams - InvalidToken",
+          "name": "List Corsi - InvalidToken",
           "event": [
             {
               "listen": "test",
@@ -937,9 +1108,9 @@
           "request": {
             "method": "GET",
             "header": [
-              { "key": "Authorization", "value": "Bearer invalidtoken123" }
+              { "key": "Authorization", "value": "Bearer {{tokenNonValido}}" }
             ],
-            "url": "{{baseurl}}/teams"
+            "url": "{{baseurl}}/corsis"
           }
         }
       ]
