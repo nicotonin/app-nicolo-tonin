@@ -49,6 +49,9 @@
       <div class="form-group">
         <label>Data Assegnazione *</label>
         <input type="date" [(ngModel)]="form.dataAssegnazione" required />
+        <span *ngIf="form.dataAssegnazione && dataAssegnazioneErrata()" class="field-error">
+          Non può essere precedente a oggi
+        </span>
       </div>
       <div class="form-group">
         <label>Data Scadenza *</label>
@@ -61,7 +64,7 @@
     </div>
     <div class="form-actions">
       <button class="btn-cancel" (click)="closeForm()">Annulla</button>
-      <button class="btn-save" [disabled]="formLoading || dateScadenzaErrata()" (click)="save()">
+      <button class="btn-save" [disabled]="formLoading || dateScadenzaErrata() || dataAssegnazioneErrata()" (click)="save()">
         <span *ngIf="formLoading" class="spinner"></span>
         Assegna Corso
       </button>

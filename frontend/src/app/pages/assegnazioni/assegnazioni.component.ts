@@ -72,6 +72,12 @@ export class AssegnazioniComponent {
 
   categorie = ['Sicurezza', 'Informatica', 'Lingue', 'Management', 'Compliance', 'Soft Skills', 'Tecnico-Professionale', 'Qualità'];
 
+  dataAssegnazioneErrata(): boolean {
+    if (!this.form.dataAssegnazione) return false;
+    const oggi = new Date(); oggi.setHours(0, 0, 0, 0);
+    return new Date(this.form.dataAssegnazione) < oggi;
+  }
+
   dateScadenzaErrata(): boolean {
     if (!this.form.dataAssegnazione || !this.form.dataScadenza) return false;
     return new Date(this.form.dataScadenza) < new Date(this.form.dataAssegnazione);
@@ -97,6 +103,14 @@ export class AssegnazioniComponent {
     if (new Date(this.form.dataScadenza) < new Date(this.form.dataAssegnazione)) {
       this.formError = 'La data di scadenza non può essere precedente alla data di assegnazione';
       return;
+    }
+    if (this.form.dataAssegnazione) {
+      const oggi = new Date();
+      oggi.setHours(0, 0, 0, 0);
+      if (new Date(this.form.dataAssegnazione) < oggi) {
+        this.formError = 'La data di assegnazione non può essere precedente alla data odierna';
+        return;
+      }
     }
     const duplicato = this.fullAssignments.find(a =>
       a.corsoId === this.form.corsoId &&
