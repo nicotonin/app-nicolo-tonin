@@ -4,7 +4,7 @@ import { User } from './user.entity';
 const userSchema = new Schema<User>({
     firstName: String,
     lastName: String,
-    role: { type: String, enum: ['dipendente','responsabile','Dipendente','Responsabile' ], required: true }
+    role: { type: String, enum: ['dipendente','referente','Dipendente','Referente' ], required: true }
 })
 
 userSchema.set('toJSON', {

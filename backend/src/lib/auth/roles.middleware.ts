@@ -15,14 +15,14 @@ export const isDipendente = async (
   }
 };
 
-export const isResponsabile = async (
+export const isReferente = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    if (!req.user || req.user.role !== 'responsabile') {
-     res.status(404).json({ message: "L'utente non è un responsabile" });
+    if (!req.user || req.user.role !== 'referente') {
+     res.status(404).json({ message: "L'utente non è un referente" });
     }
     next();
   } catch (error) {

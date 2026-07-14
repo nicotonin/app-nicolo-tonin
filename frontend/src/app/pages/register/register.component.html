@@ -90,7 +90,7 @@
         <select formControlName="role">
           <option value="">-- Select a role --</option>
           <option value="dipendente">dipendente</option>
-          <option value="responsabile">responsabile</option>
+          <option value="referente">referente</option>
         </select>
       </div>
       <small class="field-error" *ngIf="(submitted || registerForm.get('role')?.touched) && registerForm.get('role')?.errors?.['required']">

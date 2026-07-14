@@ -14,18 +14,10 @@ import { LoginComponent } from './pages/login/login.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { NavUserComponent } from './components/nav-user/nav-user.component';
 import { IfAuthenticatedDirective } from '../utils/if-authenticated.directive';
-import { CategoryComponent } from './pages/category/category.component';
-import { CategoryDetailComponent } from './pages/category/category-detail.component';
-import { FilmComponent } from './pages/film/film.component';
-import { FilmDetailComponent } from './pages/film/film-detail.component';
-import { AnalisiComponent } from './pages/analisi/analisi.component';
-import { AnalisiDetailComponent } from './pages/analisi/analisi-detail.component';
 import { AppRoutingModule } from './app-routing-module';
 
 @NgModule({
   declarations: [
-    AnalisiComponent,
-    AnalisiDetailComponent,
     App,
     AppComponent,
     LoginComponent,
@@ -34,10 +26,6 @@ import { AppRoutingModule } from './app-routing-module';
     NavbarComponent,
     NavUserComponent,
     IfAuthenticatedDirective,
-    CategoryComponent,
-    CategoryDetailComponent,
-    FilmComponent,
-    FilmDetailComponent,
   ],
   imports: [
     BrowserModule,
