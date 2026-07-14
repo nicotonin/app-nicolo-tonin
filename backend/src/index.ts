@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 
 
 mongoose.set('debug', true);
-mongoose.connect('mongodb://localhost:27017/its-simulazione-esame')
+mongoose.connect('mongodb://localhost:27017/its-esame')
     .then(_ => {
         createServer(app).listen(3000, () => {
             console.log('Server listening on port 3000');

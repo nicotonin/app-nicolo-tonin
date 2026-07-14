@@ -1,17 +1,18 @@
-import { IsString, IsOptional, IsNotEmpty, IsNumber, Min, IsBoolean } from "class-validator";
-import { Type } from "class-transformer";
+import { IsString, IsOptional, IsNotEmpty, IsNumber, Min, IsBoolean, IsIn, Matches } from "class-validator";
+import { CATEGORIE } from "./corsi.entity";
 
 export class AddCorsiDTO {
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Titolo should not be empty or just spaces' })
   titolo: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Descrizione should not be empty or just spaces' })
   descrizione: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Categoria should not be empty' })
+  @IsIn([...CATEGORIE], { message: 'Categoria non valida' })
   categoria: string;
 
   @IsNumber()
@@ -36,6 +37,7 @@ export class UpdateCorsiDTO {
 
   @IsOptional()
   @IsString()
+  @IsIn([...CATEGORIE], { message: 'Categoria non valida' })
   categoria?: string;
 
   @IsOptional()
@@ -55,6 +57,7 @@ export class UpdateCorsiDTO {
 export class QueryListCorsiDTO {
   @IsOptional()
   @IsString()
+  @IsIn([...CATEGORIE], { message: 'Categoria non valida' })
   categoria?: string;
 
   @IsOptional()

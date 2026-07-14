@@ -6,7 +6,7 @@ const assegnazioniSchema = new Schema(
     dipendenteId: { type: String, required: true },
     dataAssegnazione: { type: Date, required: true },
     dataScadenza: { type: Date, required: true },
-    stato: { type: String, required: true },
+    stato: { type: String, required: true, enum: ['assegnato', 'completato', 'scaduto', 'annullato'] },
     dataCompletamento: { type: Date, required: false },
   },
   { timestamps: true }

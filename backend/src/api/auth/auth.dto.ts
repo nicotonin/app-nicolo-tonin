@@ -1,4 +1,16 @@
-import { IsEmail, IsNotEmpty, IsString, IsStrongPassword, IsUrl, Matches, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, IsStrongPassword, IsIn, Matches, ValidatorConstraint, ValidatorConstraintInterface, Validate } from "class-validator";
+
+@ValidatorConstraint({ name: 'passwordsMatch', async: false })
+export class PasswordsMatchConstraint implements ValidatorConstraintInterface {
+    validate(confirmPassword: string, args: any) {
+        const obj = args.object as AddUserDTO;
+        return obj.password === confirmPassword;
+    }
+
+    defaultMessage() {
+        return 'password e confirmPassword non corrispondono';
+    }
+}
 
 export class AddUserDTO {
     @IsString()
@@ -12,10 +24,13 @@ export class AddUserDTO {
     lastName: string;
 
     @IsEmail()
+    @IsNotEmpty({ message: 'Email should not be empty' })
     email: string;
 
     @IsString()
-    role:string;
+    @IsNotEmpty({ message: 'Role should not be empty' })
+    @IsIn(['dipendente', 'referente'], { message: 'Ruolo non valido' })
+    role: string;
 
     @IsStrongPassword({
         minLength: 8
@@ -24,5 +39,6 @@ export class AddUserDTO {
 
     @IsString()
     @IsNotEmpty({ message: 'ConfirmPassword should not be empty' })
+    @Validate(PasswordsMatchConstraint)
     confirmPassword: string;
 }

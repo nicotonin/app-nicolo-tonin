@@ -7,7 +7,8 @@ export const isDipendente = async (
 ): Promise<void> => {
   try {
     if (!req.user || req.user.role !== 'dipendente') {
-     res.status(404).json({ message: "L'utente non è un dipendente " });
+      res.status(403).json({ message: "L'utente non è un dipendente" });
+      return;
     }
     next();
   } catch (error) {
@@ -22,7 +23,8 @@ export const isReferente = async (
 ): Promise<void> => {
   try {
     if (!req.user || req.user.role !== 'referente') {
-     res.status(404).json({ message: "L'utente non è un referente" });
+      res.status(403).json({ message: "L'utente non è un referente" });
+      return;
     }
     next();
   } catch (error) {
