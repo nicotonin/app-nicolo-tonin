@@ -1,0 +1,103 @@
+<div class="page">
+  <h1>Catalogo Corsi</h1>
+  <p class="subtitle">Gestisci i corsi disponibili nell'Academy</p>
+
+  <div class="toolbar">
+    <div class="filtri">
+      <select [(ngModel)]="filterCategoria" (change)="filtra()">
+        <option value="">Tutte le categorie</option>
+        <option *ngFor="let c of categorie" [value]="c">{{ c }}</option>
+      </select>
+      <select [(ngModel)]="filterAttivo" (change)="filtra()">
+        <option value="">Tutti (attivo/non attivo)</option>
+        <option value="true">Solo attivi</option>
+        <option value="false">Solo non attivi</option>
+      </select>
+    </div>
+    <button class="btn-add" (click)="openCreate()">+ Nuovo Corso</button>
+  </div>
+
+  <div *ngIf="showForm" class="overlay" (click)="closeForm()">
+  <div class="form-card" (click)="$event.stopPropagation()">
+    <h3>{{ editingItem ? 'Modifica Corso' : 'Nuovo Corso' }}</h3>
+    <div *ngIf="formError" class="error-msg">{{ formError }}</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Titolo *</label>
+        <input type="text" [(ngModel)]="form.titolo" required />
+      </div>
+      <div class="form-group">
+        <label>Categoria *</label>
+        <select [(ngModel)]="form.categoria" required>
+          <option value="">Seleziona...</option>
+          <option *ngFor="let c of categorie" [value]="c">{{ c }}</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Descrizione *</label>
+        <textarea [(ngModel)]="form.descrizione" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Durata (ore) *</label>
+        <input type="number" [(ngModel)]="form.durata" min="1" />
+      </div>
+      <div class="form-group check">
+        <label>
+          <input type="checkbox" [(ngModel)]="form.obbligatorio" />
+          Obbligatorio
+        </label>
+      </div>
+      <div class="form-group check">
+        <label>
+          <input type="checkbox" [(ngModel)]="form.attivo" />
+          Attivo
+        </label>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-cancel" (click)="closeForm()">Annulla</button>
+      <button class="btn-save" [disabled]="formLoading" (click)="save()">
+        <span *ngIf="formLoading" class="spinner"></span>
+        {{ editingItem ? 'Salva Modifiche' : 'Crea Corso' }}
+      </button>
+    </div>
+  </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table *ngIf="items$ | async as items; else loading">
+      <thead>
+        <tr>
+          <th>Titolo</th>
+          <th>Categoria</th>
+          <th>Durata</th>
+          <th>Obbligatorio</th>
+          <th>Attivo</th>
+          <th>Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of items">
+          <td>{{ c.titolo }}</td>
+          <td>{{ c.categoria }}</td>
+          <td>{{ c.durata }}h</td>
+          <td>{{ c.obbligatorio ? 'Sì' : 'No' }}</td>
+          <td>
+            <span class="badge" [class.badge-attivo]="c.attivo" [class.badge-non-attivo]="!c.attivo">
+              {{ c.attivo ? 'Attivo' : 'Non attivo' }}
+            </span>
+          </td>
+          <td class="actions">
+            <button class="btn-edit" (click)="openEdit(c)">Modifica</button>
+            <button class="btn-disattiva" *ngIf="c.attivo" (click)="disattiva(c)">Disattiva</button>
+            <button class="btn-delete" (click)="elimina(c)">Elimina</button>
+          </td>
+        </tr>
+        <tr *ngIf="items.length === 0">
+          <td colspan="6" class="empty">Nessun corso trovato</td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #loading><p class="loading">Caricamento...</p></ng-template>
+  </div>
+</div>

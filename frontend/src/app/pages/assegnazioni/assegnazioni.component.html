@@ -1,0 +1,115 @@
+<div class="page">
+  <h1>Assegnazioni</h1>
+  <p class="subtitle">Gestisci le assegnazioni dei corsi ai dipendenti</p>
+
+  <div class="toolbar">
+    <div class="filtri">
+      <select [(ngModel)]="filterStato" (change)="filtra()">
+        <option value="">Tutti gli stati</option>
+        <option value="assegnato">Assegnato</option>
+        <option value="completato">Completato</option>
+        <option value="scaduto">Scaduto</option>
+        <option value="annullato">Annullato</option>
+      </select>
+      <select [(ngModel)]="filterCategoria" (change)="filtra()">
+        <option value="">Tutte le categorie</option>
+        <option *ngFor="let c of categorie" [value]="c">{{ c }}</option>
+      </select>
+      <select [(ngModel)]="filterCorsoId" (change)="filtra()">
+        <option value="">Tutti i corsi</option>
+        <option *ngFor="let c of corsi$ | async" [value]="c.id">{{ c.titolo }}</option>
+      </select>
+      <select [(ngModel)]="filterDipendenteId" (change)="filtra()">
+        <option value="">Tutti i dipendenti</option>
+        <option *ngFor="let d of dipendenti$ | async" [value]="d.id">{{ d.firstName }} {{ d.lastName }}</option>
+      </select>
+    </div>
+    <button class="btn-add" (click)="openCreate()">+ Nuova Assegnazione</button>
+  </div>
+
+  <div *ngIf="showForm" class="overlay" (click)="closeForm()">
+  <div class="form-card" (click)="$event.stopPropagation()">
+    <h3>Nuova Assegnazione</h3>
+    <div *ngIf="formError" class="error-msg">{{ formError }}</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Corso *</label>
+        <select [(ngModel)]="form.corsoId" required>
+          <option value="">Seleziona corso...</option>
+          <option *ngFor="let c of corsi$ | async" [value]="c.id">{{ c.titolo }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Dipendente *</label>
+        <select [(ngModel)]="form.dipendenteId" required>
+          <option value="">Seleziona dipendente...</option>
+          <option *ngFor="let d of dipendenti$ | async" [value]="d.id">{{ d.firstName }} {{ d.lastName }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Data Assegnazione *</label>
+        <input type="date" [(ngModel)]="form.dataAssegnazione" required />
+      </div>
+      <div class="form-group">
+        <label>Data Scadenza *</label>
+        <input type="date" [(ngModel)]="form.dataScadenza"
+          (input)="formError = formError.includes('scadenza') ? '' : formError" required />
+        <span *ngIf="dateScadenzaErrata()" class="field-error">
+          La scadenza deve essere dopo la data di assegnazione
+        </span>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-cancel" (click)="closeForm()">Annulla</button>
+      <button class="btn-save" [disabled]="formLoading || dateScadenzaErrata()" (click)="save()">
+        <span *ngIf="formLoading" class="spinner"></span>
+        Assegna Corso
+      </button>
+    </div>
+  </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table *ngIf="items$ | async as items; else loading">
+      <thead>
+        <tr>
+          <th>Dipendente</th>
+          <th>Corso</th>
+          <th>Categoria</th>
+          <th>Assegnazione</th>
+          <th>Scadenza</th>
+          <th>Stato</th>
+          <th>Completamento</th>
+          <th>Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let a of items">
+          <td>{{ a._dipendenteNome }}</td>
+          <td>{{ a._corsoTitolo }}</td>
+          <td>{{ a._corsoCategoria }}</td>
+          <td>{{ a.dataAssegnazione | date:'dd/MM/yyyy' }}</td>
+          <td>{{ a.dataScadenza | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <span class="badge"
+              [class.badge-assegnato]="a.stato === 'assegnato'"
+              [class.badge-completato]="a.stato === 'completato'"
+              [class.badge-scaduto]="a.stato === 'scaduto'"
+              [class.badge-annullato]="a.stato === 'annullato'">
+              {{ a.stato }}
+            </span>
+          </td>
+          <td>{{ a.dataCompletamento ? (a.dataCompletamento | date:'dd/MM/yyyy') : '-' }}</td>
+          <td class="actions">
+            <button class="btn-annulla" *ngIf="a.stato === 'assegnato'" (click)="annulla(a.id!)">Annulla</button>
+            <button class="btn-delete" (click)="elimina(a.id!)">Elimina</button>
+          </td>
+        </tr>
+        <tr *ngIf="items.length === 0">
+          <td colspan="8" class="empty">Nessuna assegnazione trovata</td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #loading><p class="loading">Caricamento...</p></ng-template>
+  </div>
+</div>

@@ -1,45 +1,57 @@
-
 <div class="page">
+  <h1>Statistiche Formazione</h1>
+  <p class="subtitle">Riepilogo corsi assegnati e completati per mese e categoria</p>
 
-  <h1>Lista analytics</h1>
-
-  <button class="btn-add" (click)="openAdd()">
-    + Aggiungi
-  </button>
-
-  <div class="table-wrapper">
-  <table *ngIf="items$ | async as items">
-
-    <thead>
-     <tr>
-        <th>Name</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-
-    <tbody>
-
-      <tr *ngFor="let c of items" (click)="openDetail(c.id)">
-
-        <td>{{ c.name }}</td>
-
-        <td class="actions">
-
-          <button class="btn-edit" (click)="edit(c); $event.stopPropagation()">
-            Modifica
-          </button>
-
-          <button class="btn-delete" (click)="delete(c.id); $event.stopPropagation()">
-            Elimina
-          </button>
-
-        </td>
-
-      </tr>
-
-    </tbody>
-
-  </table>
+  <div class="riepilogo-cards">
+    <div class="stat-card">
+      <span class="stat-num">{{ (corsiAttivi$ | async)?.length || 0 }}</span>
+      <span class="stat-label">Corsi attivi</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">{{ (assegnazioniInCorso$ | async)?.length || 0 }}</span>
+      <span class="stat-label">Assegnazioni in corso</span>
+    </div>
   </div>
 
+  <div class="filtri">
+    <input type="text" placeholder="Mese (YYYY-MM)" [(ngModel)]="filterMese" (keyup.enter)="filtra()" />
+    <select [(ngModel)]="filterCategoria" (change)="filtra()">
+      <option value="">Tutte le categorie</option>
+      <option *ngFor="let c of categorie" [value]="c">{{ c }}</option>
+    </select>
+    <button class="btn-filtra" (click)="filtra()">Filtra</button>
+    <button class="btn-reset" (click)="reset()">Reimposta</button>
+  </div>
+
+  <div class="table-wrapper">
+    <table *ngIf="items$ | async as items; else loading">
+      <thead>
+        <tr>
+          <th>Mese</th>
+          <th>Categoria</th>
+          <th>Assegnazioni</th>
+          <th>Completati</th>
+          <th>% Completamento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let s of items">
+          <td>{{ s.mese }}</td>
+          <td>{{ s.categoria }}</td>
+          <td>{{ s.numeroAssegnazioni }}</td>
+          <td>{{ s.numeroCompletamenti }}</td>
+          <td>
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="s.percentualeCompletamento"></div>
+            </div>
+            <span class="percent">{{ s.percentualeCompletamento }}%</span>
+          </td>
+        </tr>
+        <tr *ngIf="items.length === 0">
+          <td colspan="5" class="empty">Nessun dato disponibile per i filtri selezionati</td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #loading><p class="loading">Caricamento...</p></ng-template>
+  </div>
 </div>

@@ -1,45 +1,105 @@
-
 <div class="page">
+  <ng-container *ngIf="currentUser$ | async as user; else loginMsg">
+    <h1>Benvenuto, {{ user.firstName }} {{ user.lastName }}</h1>
+    <p class="role-badge" [class.referente]="user.role === 'referente'">
+      {{ user.role === 'referente' ? 'Referente Academy' : 'Dipendente' }}
+    </p>
 
-  <h1>Lista home</h1>
+    <!-- DIPENDENTE -->
+    <div *ngIf="user.role === 'dipendente'" class="dashboard-section">
+      <h2>I Miei Corsi</h2>
 
-  <button class="btn-add" (click)="openAdd()">
-    + Aggiungi
-  </button>
+      <div class="filtri">
+        <select [(ngModel)]="filterStato" (change)="refresh$.next()">
+          <option value="">Tutti gli stati</option>
+          <option value="assegnato">Assegnato</option>
+          <option value="completato">Completato</option>
+          <option value="scaduto">Scaduto</option>
+          <option value="annullato">Annullato</option>
+        </select>
+        <select [(ngModel)]="filterCategoria" (change)="refresh$.next()">
+          <option value="">Tutte le categorie</option>
+          <option *ngFor="let c of categorie" [value]="c">{{ c }}</option>
+        </select>
+        <select [(ngModel)]="filterScadenza" (change)="refresh$.next()">
+          <option value="">Tutti</option>
+          <option value="completati">Completati</option>
+          <option value="non-completati">Non ancora completati</option>
+          <option value="scaduti">Scaduti</option>
+        </select>
+      </div>
 
-  <div class="table-wrapper">
-  <table *ngIf="items$ | async as items">
+      <div class="table-wrapper">
+        <table *ngIf="filteredDipendente$ | async as items; else loading">
+          <thead>
+            <tr>
+              <th>Titolo</th>
+              <th>Categoria</th>
+              <th>Durata</th>
+              <th>Data assegnazione</th>
+              <th>Data scadenza</th>
+              <th>Stato</th>
+              <th>Data completamento</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let a of items">
+              <td>{{ a._corsoTitolo }}</td>
+              <td>{{ a._corsoCategoria }}</td>
+              <td>{{ a._corsoDurata }}h</td>
+              <td>{{ a.dataAssegnazione | date:'dd/MM/yyyy' }}</td>
+              <td>{{ a.dataScadenza | date:'dd/MM/yyyy' }}</td>
+              <td>
+                <span class="badge"
+                  [class.badge-assegnato]="a.stato === 'assegnato'"
+                  [class.badge-completato]="a.stato === 'completato'"
+                  [class.badge-scaduto]="a.stato === 'scaduto'"
+                  [class.badge-annullato]="a.stato === 'annullato'">
+                  {{ a.stato }}
+                </span>
+              </td>
+              <td>{{ a.dataCompletamento ? (a.dataCompletamento | date:'dd/MM/yyyy') : '-' }}</td>
+              <td>
+                <button *ngIf="a.stato === 'assegnato'" class="btn-completa" (click)="completa(a.id!)">
+                  Completa
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="items.length === 0">
+              <td colspan="8" class="empty">Nessun corso trovato</td>
+            </tr>
+          </tbody>
+        </table>
+        <ng-template #loading><p class="loading">Caricamento...</p></ng-template>
+      </div>
+    </div>
 
-    <thead>
-     <tr>
-        <th>Name</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
+    <!-- REFERENTE -->
+    <div *ngIf="user.role === 'referente'" class="cards">
+      <div class="card-action" (click)="openCorsi()">
+        <span class="icon">&#128218;</span>
+        <span class="label">Vai a Corsi</span>
+        <span class="desc">Gestisci il catalogo dei corsi</span>
+      </div>
+      <div class="card-action" (click)="openAssegnazioni()">
+        <span class="icon">&#128203;</span>
+        <span class="label">Vai a Assegnazioni</span>
+        <span class="desc">Assegna corsi ai dipendenti</span>
+      </div>
+      <div class="card-action" (click)="openAnalytics()">
+        <span class="icon">&#128200;</span>
+        <span class="label">Vai a Statistiche</span>
+        <span class="desc">Riepilogo completamenti</span>
+      </div>
+    </div>
+  </ng-container>
 
-    <tbody>
-
-      <tr *ngFor="let c of items" (click)="openDetail(c.id)">
-
-        <td>{{ c.name }}</td>
-
-        <td class="actions">
-
-          <button class="btn-edit" (click)="edit(c); $event.stopPropagation()">
-            Modifica
-          </button>
-
-          <button class="btn-delete" (click)="delete(c.id); $event.stopPropagation()">
-            Elimina
-          </button>
-
-        </td>
-
-      </tr>
-
-    </tbody>
-
-  </table>
-  </div>
-
+  <ng-template #loginMsg>
+    <div class="login-msg">
+      <h1>Academy Aziendale</h1>
+      <p>Accedi per visualizzare la dashboard</p>
+      <a class="btn-login" routerLink="/login">Vai al Login</a>
+    </div>
+  </ng-template>
 </div>

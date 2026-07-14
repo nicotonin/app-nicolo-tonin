@@ -11,7 +11,7 @@ export class UserService {
   protected http = inject(HttpClient);
 
   list() {
-    return this.http.get<User[]>('${environment.apiUrl}/users');
+    return this.http.get<User[]>(`${environment.apiUrl}/users`);
   }
 
 }

@@ -53,6 +53,15 @@ export class AssegnazioniService {
       throw new BadRequestError("Impossibile assegnare: il corso non è attivo");
     }
 
+    const existing = await AssegnazioniModel.findOne({
+      corsoId: data.corsoId,
+      dipendenteId: data.dipendenteId,
+      stato: 'assegnato'
+    });
+    if (existing) {
+      throw new BadRequestError("Il corso è già stato assegnato a questo dipendente");
+    }
+
     if (data.dataAssegnazione && data.dataScadenza) {
       if (new Date(data.dataScadenza) < new Date(data.dataAssegnazione)) {
         throw new BadRequestError("La data di scadenza non può essere precedente alla data di assegnazione");

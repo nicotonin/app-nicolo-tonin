@@ -3,43 +3,44 @@ import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from '../utils/auth.guard';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
-import { AnalyticsComponent } from './pages/analytics/analytics.component';
-import { AnalyticsDetailComponent } from './pages/analytics-detail/analytics-detail.component';
 import { HomeComponent } from './pages/home/home.component';
-import { HomeDetailComponent } from './pages/home-detail/home-detail.component';
-
+import { AnalyticsComponent } from './pages/analytics/analytics.component';
+import { CorsiComponent } from './pages/corsi/corsi.component';
+import { AssegnazioniComponent } from './pages/assegnazioni/assegnazioni.component';
 
 const routes: Routes = [
   {
     path: 'home',
+    canActivate: [authGuard],
     component: HomeComponent
   },
   {
-    path: 'home/:id',
-    component: HomeDetailComponent
+    path: 'corsi',
+    canActivate: [authGuard],
+    component: CorsiComponent
+  },
+  {
+    path: 'assegnazioni',
+    canActivate: [authGuard],
+    component: AssegnazioniComponent
   },
   {
     path: 'analytics',
-    canActivate:[authGuard],
+    canActivate: [authGuard],
     component: AnalyticsComponent
-  },
-  {
-    path: 'analytics/:id',
-    canActivate:[authGuard],
-    component: AnalyticsDetailComponent
   },
   {
     path: 'login',
     component: LoginComponent
   },
   {
+    path: 'register',
+    component: RegisterComponent
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
-  },
-  {
-    path: 'register',
-    component: RegisterComponent
   },
 ];
 

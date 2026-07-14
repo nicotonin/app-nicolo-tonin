@@ -1,12 +1,9 @@
-
 import { Component, inject } from '@angular/core';
 import { AnalyticsService } from '../../../service/analytics.service';
-import { Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { BehaviorSubject, switchMap, of, catchError } from 'rxjs';
+import { CorsiService } from '../../../service/corsi.service';
+import { AssignmentsService } from '../../../service/assignments.service';
 import { AuthService } from '../../../service/auth.service';
-import { Analytics } from '../../../service/analytics.entity';
-import { AnalyticsModalComponent } from '../../components/analytics-modal/analytics-modal.component';
+import { BehaviorSubject, switchMap, of, catchError } from 'rxjs';
 
 @Component({
   selector: 'app-analytics',
@@ -15,56 +12,37 @@ import { AnalyticsModalComponent } from '../../components/analytics-modal/analyt
   styleUrl: './analytics.component.css',
 })
 export class AnalyticsComponent {
-
-  private srv = inject(AnalyticsService);
-  private router = inject(Router);
-  private modalService = inject(NgbModal);
+  private analyticsSrv = inject(AnalyticsService);
+  private corsiSrv = inject(CorsiService);
+  private assignSrv = inject(AssignmentsService);
   protected authSrv = inject(AuthService);
+
+  filterMese = '';
+  filterCategoria = '';
 
   refresh$ = new BehaviorSubject<void>(undefined);
 
-  items$ = this.authSrv.isAuthenticated$.pipe(
-    switchMap(isAuth => {
-      if (!isAuth) return of([]);
-
-      return this.refresh$.pipe(
-        switchMap(() =>
-          this.srv.list().pipe(
-            catchError(err => {
-              console.error(err);
-              return of([]);
-            })
-          )
-        )
-      );
+  items$ = this.refresh$.pipe(
+    switchMap(() => {
+      const filters: any = {};
+      if (this.filterMese) filters.mese = this.filterMese;
+      if (this.filterCategoria) filters.categoria = this.filterCategoria;
+      return this.analyticsSrv.riepilogo(filters).pipe(catchError(() => of([])));
     })
   );
 
-  openAdd() {
-    const modalRef = this.modalService.open(AnalyticsModalComponent);
+  corsiAttivi$ = this.corsiSrv.list({ attivo: 'true' }).pipe(catchError(() => of([])));
+  assegnazioniInCorso$ = this.assignSrv.list({ stato: 'assegnato' }).pipe(catchError(() => of([])));
 
-    modalRef.result.then(() => {
-      this.refresh$.next();
-    }).catch(() => {});
+  filtra() { this.refresh$.next(); }
+
+  reset() {
+    this.filterMese = '';
+    this.filterCategoria = '';
+    this.refresh$.next();
   }
 
-  delete(id: string) {
-    this.srv.remove(id).subscribe(() => {
-      this.refresh$.next();
-    });
-  }
-
-  edit(item: Analytics) {
-    const modalRef = this.modalService.open(AnalyticsModalComponent);
-
-    modalRef.componentInstance.setData(item);
-
-    modalRef.result.then(() => {
-      this.refresh$.next();
-    }).catch(() => {});
-  }
-
-  openDetail(id: string) {
-    this.router.navigate(['/analytics', id]);
+  get categorie(): string[] {
+    return ['Sicurezza', 'Informatica', 'Lingue', 'Management', 'Compliance', 'Soft Skills', 'Tecnico-Professionale', 'Qualità'];
   }
 }

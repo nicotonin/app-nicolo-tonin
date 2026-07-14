@@ -1,5 +1,7 @@
-
-export type Analytics = {
-  id: string;
-  name: string;
+export type StatisticaRiepilogo = {
+  mese: string;
+  categoria: string;
+  numeroAssegnazioni: number;
+  numeroCompletamenti: number;
+  percentualeCompletamento: number;
 };

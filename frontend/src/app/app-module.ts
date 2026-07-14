@@ -1,8 +1,7 @@
-import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { App } from './app';
 import { AppComponent } from './app.component';
 import { authInterceptor } from '../utils/auth.interceptor';
 import { logoutInterceptor } from '../utils/logout.interceptor';
@@ -14,18 +13,17 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { NavUserComponent } from './components/nav-user/nav-user.component';
 import { IfAuthenticatedDirective } from '../utils/if-authenticated.directive';
 import { AppRoutingModule } from './app-routing-module';
-import { AnalyticsComponent } from './pages/analytics/analytics.component';
-import { AnalyticsDetailComponent } from './pages/analytics-detail/analytics-detail.component';
 import { HomeComponent } from './pages/home/home.component';
-import { HomeDetailComponent } from './pages/home-detail/home-detail.component';
+import { AnalyticsComponent } from './pages/analytics/analytics.component';
+import { CorsiComponent } from './pages/corsi/corsi.component';
+import { AssegnazioniComponent } from './pages/assegnazioni/assegnazioni.component';
 
 @NgModule({
   declarations: [
     HomeComponent,
-    HomeDetailComponent,
     AnalyticsComponent,
-    AnalyticsDetailComponent,
-    App,
+    CorsiComponent,
+    AssegnazioniComponent,
     AppComponent,
     LoginComponent,
     RegisterComponent,
