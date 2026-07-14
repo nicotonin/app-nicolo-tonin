@@ -1,22 +1,22 @@
 
 import { Component, inject } from '@angular/core';
-import { HomeService } from '../../../service/home.service';
+import { AnalyticsService } from '../../../service/analytics.service';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, switchMap, of, catchError } from 'rxjs';
 import { AuthService } from '../../../service/auth.service';
-import { Home } from '../../../service/home.entity';
-import { HomeModalComponent } from '../../components/home-modal/home-modal.component';
+import { Analytics } from '../../../service/analytics.entity';
+import { AnalyticsModalComponent } from '../../components/analytics-modal/analytics-modal.component';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-analytics',
   standalone: false,
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css',
+  templateUrl: './analytics.component.html',
+  styleUrl: './analytics.component.css',
 })
-export class HomeComponent {
+export class AnalyticsComponent {
 
-  private srv = inject(HomeService);
+  private srv = inject(AnalyticsService);
   private router = inject(Router);
   private modalService = inject(NgbModal);
   protected authSrv = inject(AuthService);
@@ -41,7 +41,7 @@ export class HomeComponent {
   );
 
   openAdd() {
-    const modalRef = this.modalService.open(HomeModalComponent);
+    const modalRef = this.modalService.open(AnalyticsModalComponent);
 
     modalRef.result.then(() => {
       this.refresh$.next();
@@ -54,8 +54,8 @@ export class HomeComponent {
     });
   }
 
-  edit(item: Home) {
-    const modalRef = this.modalService.open(HomeModalComponent);
+  edit(item: Analytics) {
+    const modalRef = this.modalService.open(AnalyticsModalComponent);
 
     modalRef.componentInstance.setData(item);
 
@@ -65,6 +65,6 @@ export class HomeComponent {
   }
 
   openDetail(id: string) {
-    this.router.navigate(['/home', id]);
+    this.router.navigate(['/analytics', id]);
   }
 }

@@ -10,6 +10,10 @@
     { "key": "tokenNonValido", "value": "Bearer_nOn_VaLiDo_123" },
     { "key": "passwordReferente", "value": "Password123!" },
     { "key": "passwordDipendente", "value": "Password123!" },
+    { "key": "passwordManuela", "value": "Password123!" },
+    { "key": "passwordSilvia", "value": "Password123!" },
+    { "key": "tokenManuela", "value": "" },
+    { "key": "tokenSilvia", "value": "" },
     { "key": "passwordErrante", "value": "WrongPass1!" },
     { "key": "passwordDebole", "value": "weak" },
     { "key": "corsoId", "value": "" },
@@ -17,6 +21,7 @@
     { "key": "assegnazioneId", "value": "" },
     { "key": "assegnazioneId2", "value": "" },
     { "key": "dipendenteId", "value": "" },
+    { "key": "silviaId", "value": "" },
     { "key": "referenteId", "value": "" }
   ],
   "item": [
@@ -51,7 +56,32 @@
           }
         },
         {
-          "name": "Register - Dipendente",
+          "name": "Register - Referente (Manuela)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', () => { pm.response.to.have.status(201); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Manuela\",\n  \"lastName\": \"Perusin\",\n  \"email\": \"manuela.perusin@azienda.it\",\n  \"role\": \"referente\",\n  \"password\": \"{{passwordManuela}}\",\n  \"confirmPassword\": \"{{passwordManuela}}\"\n}"
+            },
+            "url": "{{baseurl}}/auth/register"
+          }
+        },
+        {
+          "name": "Register - Dipendente (Nicolo)",
           "event": [
             {
               "listen": "test",
@@ -73,6 +103,33 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"firstName\": \"Nicolo\",\n  \"lastName\": \"Tonin\",\n  \"email\": \"nicolo.tonin@azienda.it\",\n  \"role\": \"dipendente\",\n  \"password\": \"{{passwordReferente}}\",\n  \"confirmPassword\": \"{{passwordReferente}}\"\n}"
+            },
+            "url": "{{baseurl}}/auth/register"
+          }
+        },
+        {
+          "name": "Register - Dipendente (Silvia)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', () => { pm.response.to.have.status(201); });",
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('silviaId', json.id || json._id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Silvia\",\n  \"lastName\": \"Tonin\",\n  \"email\": \"silvia.tonin@azienda.it\",\n  \"role\": \"dipendente\",\n  \"password\": \"{{passwordSilvia}}\",\n  \"confirmPassword\": \"{{passwordSilvia}}\"\n}"
             },
             "url": "{{baseurl}}/auth/register"
           }
@@ -211,6 +268,62 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"nicolo.tonin@azienda.it\",\n  \"password\": \"{{passwordReferente}}\"\n}"
+            },
+            "url": "{{baseurl}}/auth/login"
+          }
+        },
+        {
+          "name": "Login - Manuela (Referente)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.test('Has token', () => { pm.expect(json).to.have.property('token'); });",
+                  "pm.collectionVariables.set('tokenManuela', json.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"manuela.perusin@azienda.it\",\n  \"password\": \"{{passwordManuela}}\"\n}"
+            },
+            "url": "{{baseurl}}/auth/login"
+          }
+        },
+        {
+          "name": "Login - Silvia (Dipendente)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.test('Has token', () => { pm.expect(json).to.have.property('token'); });",
+                  "pm.collectionVariables.set('tokenSilvia', json.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"silvia.tonin@azienda.it\",\n  \"password\": \"{{passwordSilvia}}\"\n}"
             },
             "url": "{{baseurl}}/auth/login"
           }

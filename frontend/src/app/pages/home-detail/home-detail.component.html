@@ -1,0 +1,17 @@
+
+<div class="page">
+
+  <h1>Dettaglio home</h1>
+
+  <div *ngIf="item$ | async as item; else loading" class="card">
+    <p><strong>ID:</strong> {{ item.id }}</p>
+    <p><strong>Name:</strong> {{ item.name }}</p>
+  </div>
+
+  <ng-template #loading>
+    <p>Caricamento...</p>
+  </ng-template>
+
+  <button class="btn-back" routerLink="/home">Indietro</button>
+
+</div>

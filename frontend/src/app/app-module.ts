@@ -8,21 +8,27 @@ import { authInterceptor } from '../utils/auth.interceptor';
 import { logoutInterceptor } from '../utils/logout.interceptor';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HomeComponent } from './pages/home/home.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { LoginComponent } from './pages/login/login.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { NavUserComponent } from './components/nav-user/nav-user.component';
 import { IfAuthenticatedDirective } from '../utils/if-authenticated.directive';
 import { AppRoutingModule } from './app-routing-module';
+import { AnalyticsComponent } from './pages/analytics/analytics.component';
+import { AnalyticsDetailComponent } from './pages/analytics-detail/analytics-detail.component';
+import { HomeComponent } from './pages/home/home.component';
+import { HomeDetailComponent } from './pages/home-detail/home-detail.component';
 
 @NgModule({
   declarations: [
+    HomeComponent,
+    HomeDetailComponent,
+    AnalyticsComponent,
+    AnalyticsDetailComponent,
     App,
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    HomeComponent,
     NavbarComponent,
     NavUserComponent,
     IfAuthenticatedDirective,

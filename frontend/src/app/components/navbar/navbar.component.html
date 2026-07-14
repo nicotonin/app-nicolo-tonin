@@ -12,14 +12,11 @@
 
   <a [routerLink]="['/home']">Home</a>
 
-  <a *ngIf="(currentUser$ | async)?.role === 'role2'"
+  <a *ngIf="(currentUser$ | async)?.role === 'referente'"
      [routerLink]="['/analytics']">
     Analytics
   </a>
 
-  <a [routerLink]="['/film']">Film</a>
-
-  <a [routerLink]="['/category']">Categorie</a>
 
 </div>
     <!-- RIGHT SIDE -->
