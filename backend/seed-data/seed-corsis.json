@@ -1,0 +1,122 @@
+[
+  {
+    "_id": { "$oid": "664d8f8e8f8e8f8e8f8e0003" },
+    "titolo": "Corso Antincendio Base",
+    "descrizione": "Formazione obbligatoria antincendio per tutti i dipendenti con rilascio attestato",
+    "categoria": "Sicurezza",
+    "durata": 8,
+    "obbligatorio": true,
+    "attivo": true,
+    "createdAt": { "$date": "2026-01-15T08:00:00.000Z" },
+    "updatedAt": { "$date": "2026-01-15T08:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "664d8f8e8f8e8f8e8f8e0004" },
+    "titolo": "Corso Primo Soccorso",
+    "descrizione": "Tecniche di primo soccorso e gestione delle emergenze in azienda",
+    "categoria": "Sicurezza",
+    "durata": 4,
+    "obbligatorio": true,
+    "attivo": true,
+    "createdAt": { "$date": "2026-01-20T08:00:00.000Z" },
+    "updatedAt": { "$date": "2026-01-20T08:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "664d8f8e8f8e8f8e8f8e0005" },
+    "titolo": "Excel Avanzato",
+    "descrizione": "Corso di Excel con formule avanzate, tabelle pivot e macro",
+    "categoria": "Informatica",
+    "durata": 16,
+    "obbligatorio": false,
+    "attivo": true,
+    "createdAt": { "$date": "2026-02-01T09:00:00.000Z" },
+    "updatedAt": { "$date": "2026-02-01T09:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "664d8f8e8f8e8f8e8f8e0006" },
+    "titolo": "Python Programming",
+    "descrizione": "Introduzione alla programmazione Python per automazione e analisi dati",
+    "categoria": "Informatica",
+    "durata": 24,
+    "obbligatorio": false,
+    "attivo": true,
+    "createdAt": { "$date": "2026-02-10T09:00:00.000Z" },
+    "updatedAt": { "$date": "2026-02-10T09:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "664d8f8e8f8e8f8e8f8e0007" },
+    "titolo": "Inglese Tecnico B1",
+    "descrizione": "Corso di inglese tecnico per la comunicazione in ambito lavorativo",
+    "categoria": "Lingue",
+    "durata": 20,
+    "obbligatorio": false,
+    "attivo": true,
+    "createdAt": { "$date": "2026-03-01T10:00:00.000Z" },
+    "updatedAt": { "$date": "2026-03-01T10:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "664d8f8e8f8e8f8e8f8e0008" },
+    "titolo": "Leadership & Team Building",
+    "descrizione": "Sviluppo competenze manageriali e gestione dei gruppi di lavoro",
+    "categoria": "Management",
+    "durata": 12,
+    "obbligatorio": false,
+    "attivo": true,
+    "createdAt": { "$date": "2026-03-15T10:00:00.000Z" },
+    "updatedAt": { "$date": "2026-03-15T10:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "664d8f8e8f8e8f8e8f8e0009" },
+    "titolo": "GDPR & Privacy",
+    "descrizione": "Formazione obbligatoria sulla protezione dei dati personali e GDPR",
+    "categoria": "Compliance",
+    "durata": 6,
+    "obbligatorio": true,
+    "attivo": true,
+    "createdAt": { "$date": "2026-04-01T08:00:00.000Z" },
+    "updatedAt": { "$date": "2026-04-01T08:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "664d8f8e8f8e8f8e8f8e000a" },
+    "titolo": "Corso Obsoleto",
+    "descrizione": "Corso non più in catalogo, mantenuto per storico",
+    "categoria": "Soft Skills",
+    "durata": 4,
+    "obbligatorio": false,
+    "attivo": false,
+    "createdAt": { "$date": "2025-06-01T08:00:00.000Z" },
+    "updatedAt": { "$date": "2026-01-01T08:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "664d8f8e8f8e8f8e8f8e000b" },
+    "titolo": "Comunicazione Efficace",
+    "descrizione": "Tecniche di comunicazione interpersonale e public speaking",
+    "categoria": "Soft Skills",
+    "durata": 8,
+    "obbligatorio": false,
+    "attivo": true,
+    "createdAt": { "$date": "2026-04-10T09:00:00.000Z" },
+    "updatedAt": { "$date": "2026-04-10T09:00:00.000Z" },
+    "__v": 0
+  },
+  {
+    "_id": { "$oid": "664d8f8e8f8e8f8e8f8e000c" },
+    "titolo": "ISO 9001 Qualita",
+    "descrizione": "Formazione sul sistema di gestione della qualita ISO 9001:2015",
+    "categoria": "Qualità",
+    "durata": 10,
+    "obbligatorio": false,
+    "attivo": true,
+    "createdAt": { "$date": "2026-05-01T08:00:00.000Z" },
+    "updatedAt": { "$date": "2026-05-01T08:00:00.000Z" },
+    "__v": 0
+  }
+]
