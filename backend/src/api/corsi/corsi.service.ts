@@ -1,6 +1,7 @@
 import { CorsiModel } from "./corsi.model";
 import { Corsi, CorsiFilters } from "./corsi.entity";
 import { AssegnazioniModel } from "../assegnazioni/assegnazioni.model";
+import { BadRequestError } from "../../errors/bad-request-error";
 
 export class CorsiService {
 
@@ -37,7 +38,7 @@ export class CorsiService {
   async remove(id: string): Promise<Corsi | null> {
     const hasAssignments = await AssegnazioniModel.findOne({ corsoId: id });
     if (hasAssignments) {
-      throw new Error("Impossibile eliminare: il corso ha assegnazioni collegate");
+      throw new BadRequestError("Impossibile eliminare: il corso ha assegnazioni collegate");
     }
     return await CorsiModel.findByIdAndDelete(id);
   }

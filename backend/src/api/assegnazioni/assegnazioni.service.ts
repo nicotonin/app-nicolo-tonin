@@ -1,6 +1,7 @@
 import { AssegnazioniModel } from "./assegnazioni.model";
 import { Assegnazioni, AssegnazioniFilters } from "./assegnazioni.entity";
 import { CorsiModel } from "../corsi/corsi.model";
+import { BadRequestError } from "../../errors/bad-request-error";
 
 export class AssegnazioniService {
 
@@ -46,15 +47,15 @@ export class AssegnazioniService {
   async create(data: Partial<Assegnazioni>): Promise<Assegnazioni> {
     const corso = await CorsiModel.findById(data.corsoId);
     if (!corso) {
-      throw new Error("Corso non trovato");
+      throw new BadRequestError("Corso non trovato");
     }
     if (!corso.attivo) {
-      throw new Error("Impossibile assegnare: il corso non è attivo");
+      throw new BadRequestError("Impossibile assegnare: il corso non è attivo");
     }
 
     if (data.dataAssegnazione && data.dataScadenza) {
       if (new Date(data.dataScadenza) < new Date(data.dataAssegnazione)) {
-        throw new Error("La data di scadenza non può essere precedente alla data di assegnazione");
+        throw new BadRequestError("La data di scadenza non può essere precedente alla data di assegnazione");
       }
     }
 
@@ -73,11 +74,11 @@ export class AssegnazioniService {
     const assignmentDate = data.dataAssegnazione || existing.dataAssegnazione;
 
     if (data.dataScadenza && new Date(data.dataScadenza) < new Date(assignmentDate)) {
-      throw new Error("La data di scadenza non può essere precedente alla data di assegnazione");
+      throw new BadRequestError("La data di scadenza non può essere precedente alla data di assegnazione");
     }
 
     if (data.dataCompletamento && new Date(data.dataCompletamento) < new Date(assignmentDate)) {
-      throw new Error("La data di completamento non può essere precedente alla data di assegnazione");
+      throw new BadRequestError("La data di completamento non può essere precedente alla data di assegnazione");
     }
 
     return await AssegnazioniModel.findByIdAndUpdate(id, data, { new: true });
@@ -93,11 +94,11 @@ export class AssegnazioniService {
     if (!assignment) return null;
 
     if (assignment.dipendenteId !== userId) {
-      throw new Error("Non puoi completare un corso che non ti è stato assegnato");
+      throw new BadRequestError("Non puoi completare un corso che non ti è stato assegnato");
     }
 
     if (assignment.stato !== 'assegnato') {
-      throw new Error("Solo i corsi in stato 'assegnato' possono essere completati");
+      throw new BadRequestError("Solo i corsi in stato 'assegnato' possono essere completati");
     }
 
     assignment.stato = 'completato' as any;
@@ -113,7 +114,7 @@ export class AssegnazioniService {
     if (!assignment) return null;
 
     if (assignment.stato === 'completato' || assignment.stato === 'annullato') {
-      throw new Error("Impossibile annullare");
+      throw new BadRequestError("Impossibile annullare: l'assegnazione è già in stato terminale");
     }
 
     assignment.stato = 'annullato' as any;
@@ -127,7 +128,7 @@ export class AssegnazioniService {
     if (!assignment) return null;
 
     if (assignment.stato !== 'assegnato') {
-      throw new Error("Impossibile eliminare: solo le assegnazioni in stato 'assegnato' possono essere eliminate");
+      throw new BadRequestError("Impossibile eliminare: solo le assegnazioni in stato 'assegnato' possono essere eliminate");
     }
 
     return await AssegnazioniModel.findByIdAndDelete(id);

@@ -1,13 +1,18 @@
-import { IsString, IsOptional, IsNotEmpty } from "class-validator";
+import { IsString, IsOptional, IsMongoId, IsIn, Matches } from "class-validator";
+import { CATEGORIE } from "../corsi/corsi.entity";
 
-export class AddAnalyticDTO {
-  @IsString()
-  @IsNotEmpty({ message: 'Name should not be empty' })
-  name: string;
-}
-
-export class UpdateAnalyticDTO {
+export class QueryRiepilogoDTO {
   @IsOptional()
   @IsString()
-  name?: string;
+  @Matches(/^\d{4}-\d{2}$/, { message: 'Formato mese non valido (usa YYYY-MM)' })
+  mese?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsIn([...CATEGORIE], { message: 'Categoria non valida' })
+  categoria?: string;
+
+  @IsOptional()
+  @IsMongoId()
+  dipendenteId?: string;
 }

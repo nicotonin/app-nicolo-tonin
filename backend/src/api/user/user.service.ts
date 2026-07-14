@@ -34,7 +34,7 @@ export class UserService {
         return newUser;
     }
 
-    async getUsers(role: string): Promise<User[]> {
+    async getUsers(role?: string): Promise<User[]> {
         let query = {};
         if (role) {
             query = {role: role};

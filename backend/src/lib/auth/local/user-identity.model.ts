@@ -6,7 +6,7 @@ const userIdentitySchema = new Schema<UserIdentity>({
     provider: { type: String, default: 'local'},
     credentials: {
         type: {
-            email: String,
+            email: { type: String, unique: true },
             hashedPassword: String
         },
         _id: false

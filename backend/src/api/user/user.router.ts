@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { isAuthenticated } from "../../lib/auth/auth.middleware";
 import { listUsers } from "./user.controller"; 
 import { validate } from "../../lib/validation-middleware";
 import { QueryListUserDTO } from "./user.dto";
+import { isReferente } from "../../lib/auth/roles.middleware";
 
 const router = Router();
 
-router.get('/', validate(QueryListUserDTO, 'query'), listUsers); 
+router.get('/', isReferente, validate(QueryListUserDTO, 'query'), listUsers); 
 
 export default router;

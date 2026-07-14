@@ -1,30 +1,23 @@
 import { Response, NextFunction } from "express";
 import AnalyticService from "./analytic.service";
 import { TypedRequest } from "../../lib/typed-request.interface";
-import { AddAnalyticDTO, UpdateAnalyticDTO } from "./analytic.dto";
-import { NotFoundError } from "../../errors/not-found-error";
+import { QueryRiepilogoDTO } from "./analytic.dto";
+import { QueryStatisticheFilters } from "./analytic.entity";
+import { Categoria } from "../corsi/corsi.entity";
 
-export const list = async (
-  req: TypedRequest,
+export const riepilogo = async (
+  req: TypedRequest<any, QueryRiepilogoDTO>,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    res.json(await AnalyticService.list());
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const get = async (
-  req: TypedRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const item = await AnalyticService.get(req.params.id);
-    if (!item) throw new NotFoundError();
-    res.json(item);
+    const filters: QueryStatisticheFilters = {
+      mese: req.query.mese,
+      categoria: req.query.categoria as Categoria | undefined,
+      dipendenteId: req.query.dipendenteId,
+    };
+    const result = await AnalyticService.riepilogo(filters);
+    res.json(result);
   } catch (err) {
     next(err);
   }

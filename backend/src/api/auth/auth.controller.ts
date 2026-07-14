@@ -13,7 +13,7 @@ export const add = async (
     next: NextFunction
 ) => {
     try {
-        const userData = omit(req.body, 'email', 'password');
+        const userData = omit(req.body, 'email', 'password', 'confirmPassword');
         const credentialsData = pick(req.body, 'email', 'password');
         const newUser = await userSrv.add(userData, credentialsData);
         res.status(201).json(newUser);

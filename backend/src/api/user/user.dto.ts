@@ -1,7 +1,8 @@
-import { IsIn, IsString } from "class-validator";
+import { IsIn, IsOptional, IsString } from "class-validator";
 
 export class QueryListUserDTO {
+    @IsOptional()
     @IsString()
-    @IsIn(['dipendente', 'referente','Dipendente', 'Referente'])
-    role: string;
+    @IsIn(['dipendente', 'referente'])
+    role?: string;
 } 
