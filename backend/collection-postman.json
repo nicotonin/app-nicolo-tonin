@@ -15,6 +15,7 @@
     { "key": "corsoId", "value": "" },
     { "key": "corsoId2", "value": "" },
     { "key": "assegnazioneId", "value": "" },
+    { "key": "assegnazioneId2", "value": "" },
     { "key": "dipendenteId", "value": "" },
     { "key": "referenteId", "value": "" }
   ],
@@ -44,7 +45,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Laura\",\n  \"lastName\": \"Bianchi\",\n  \"email\": \"laura.bianchi@azienda.it\",\n  \"role\": \"referente\",\n  \"password\": \"{{passwordReferente}}\",\n  \"confirmPassword\": \"{{passwordReferente}}\"\n}"
+              "raw": "{\n  \"firstName\": \"Tino\",\n  \"lastName\": \"Tonin\",\n  \"email\": \"tino.tonin@azienda.it\",\n  \"role\": \"referente\",\n  \"password\": \"{{passwordReferente}}\",\n  \"confirmPassword\": \"{{passwordReferente}}\"\n}"
             },
             "url": "{{baseurl}}/auth/register"
           }
@@ -71,7 +72,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Mario\",\n  \"lastName\": \"Rossi\",\n  \"email\": \"mario.rossi@azienda.it\",\n  \"role\": \"dipendente\",\n  \"password\": \"{{passwordReferente}}\",\n  \"confirmPassword\": \"{{passwordReferente}}\"\n}"
+              "raw": "{\n  \"firstName\": \"Nicolo\",\n  \"lastName\": \"Tonin\",\n  \"email\": \"nicolo.tonin@azienda.it\",\n  \"role\": \"dipendente\",\n  \"password\": \"{{passwordReferente}}\",\n  \"confirmPassword\": \"{{passwordReferente}}\"\n}"
             },
             "url": "{{baseurl}}/auth/register"
           }
@@ -153,7 +154,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Mario\",\n  \"lastName\": \"Rossi\",\n  \"email\": \"mario.rossi@azienda.it\",\n  \"role\": \"dipendente\",\n  \"password\": \"{{passwordReferente}}\",\n  \"confirmPassword\": \"{{passwordReferente}}\"\n}"
+              "raw": "{\n  \"firstName\": \"Nicolo\",\n  \"lastName\": \"Tonin\",\n  \"email\": \"nicolo.tonin@azienda.it\",\n  \"role\": \"dipendente\",\n  \"password\": \"{{passwordReferente}}\",\n  \"confirmPassword\": \"{{passwordReferente}}\"\n}"
             },
             "url": "{{baseurl}}/auth/register"
           }
@@ -181,7 +182,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"laura.bianchi@azienda.it\",\n  \"password\": \"{{passwordReferente}}\"\n}"
+              "raw": "{\n  \"email\": \"tino.tonin@azienda.it\",\n  \"password\": \"{{passwordReferente}}\"\n}"
             },
             "url": "{{baseurl}}/auth/login"
           }
@@ -209,7 +210,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"mario.rossi@azienda.it\",\n  \"password\": \"{{passwordReferente}}\"\n}"
+              "raw": "{\n  \"email\": \"nicolo.tonin@azienda.it\",\n  \"password\": \"{{passwordReferente}}\"\n}"
             },
             "url": "{{baseurl}}/auth/login"
           }
@@ -263,7 +264,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"mario.rossi@azienda.it\",\n  \"password\": \"{{passwordErrante}}\"\n}"
+              "raw": "{\n  \"email\": \"nicolo.tonin@azienda.it\",\n  \"password\": \"{{passwordErrante}}\"\n}"
             },
             "url": "{{baseurl}}/auth/login"
           }
@@ -577,6 +578,92 @@
             },
             "url": "{{baseurl}}/corsis"
           }
+        },
+        {
+          "name": "Delete Corso - NotFound",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', () => { pm.response.to.have.status(404); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
+            ],
+            "url": "{{baseurl}}/corsis/000000000000000000000000"
+          }
+        },
+        {
+          "name": "Delete Corso - With Assignments",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', () => { pm.response.to.have.status(400); });",
+                  "const json = pm.response.json();",
+                  "pm.test('Error is BadRequestError', () => { pm.expect(json.error).to.eql('BadRequestError'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
+            ],
+            "url": "{{baseurl}}/corsis/{{corsoId}}"
+          }
+        },
+        {
+          "name": "Delete Corso - No Assignments",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 204', () => { pm.response.to.have.status(204); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
+            ],
+            "url": "{{baseurl}}/corsis/{{corsoId2}}"
+          }
+        },
+        {
+          "name": "Delete Corso - Forbidden (Dipendente)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 403', () => { pm.response.to.have.status(403); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{tokenDipendente}}" }
+            ],
+            "url": "{{baseurl}}/corsis/{{corsoId}}"
+          }
         }
       ]
     },
@@ -880,6 +967,197 @@
               { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
             ],
             "url": "{{baseurl}}/assegnazioni/{{assegnazioneId}}/annulla"
+          }
+        },
+        {
+          "name": "Annulla Assegnazione - Forbidden (Dipendente)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 403', () => { pm.response.to.have.status(403); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{tokenDipendente}}" }
+            ],
+            "url": "{{baseurl}}/assegnazioni/000000000000000000000000/annulla"
+          }
+        },
+        {
+          "name": "Create Assegnazione 2 (per delete test)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', () => { pm.response.to.have.status(201); });",
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('assegnazioneId2', json.id || json._id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"corsoId\": \"{{corsoId}}\",\n  \"dipendenteId\": \"{{dipendenteId}}\",\n  \"dataAssegnazione\": \"2026-07-01T00:00:00.000Z\",\n  \"dataScadenza\": \"2026-09-30T00:00:00.000Z\",\n  \"stato\": \"assegnato\"\n}"
+            },
+            "url": "{{baseurl}}/assegnazioni"
+          }
+        },
+        {
+          "name": "Update Assegnazione (Referente)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', () => { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.test('DataScadenza updated', () => { pm.expect(json.dataScadenza).to.include('2026-10-31'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataScadenza\": \"2026-10-31T00:00:00.000Z\"\n}"
+            },
+            "url": "{{baseurl}}/assegnazioni/{{assegnazioneId2}}"
+          }
+        },
+        {
+          "name": "Update Assegnazione - DateInvalid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', () => { pm.response.to.have.status(400); });",
+                  "const json = pm.response.json();",
+                  "pm.test('Error is BadRequestError', () => { pm.expect(json.error).to.eql('BadRequestError'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataScadenza\": \"2025-01-01T00:00:00.000Z\"\n}"
+            },
+            "url": "{{baseurl}}/assegnazioni/{{assegnazioneId2}}"
+          }
+        },
+        {
+          "name": "Delete Assegnazione (Referente - stato assegnato)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 204', () => { pm.response.to.have.status(204); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
+            ],
+            "url": "{{baseurl}}/assegnazioni/{{assegnazioneId2}}"
+          }
+        },
+        {
+          "name": "Delete Assegnazione - AlreadyDeleted (NotFound)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', () => { pm.response.to.have.status(404); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
+            ],
+            "url": "{{baseurl}}/assegnazioni/{{assegnazioneId2}}"
+          }
+        },
+        {
+          "name": "Delete Assegnazione - Stato non assegnato (completato/annullato)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', () => { pm.response.to.have.status(400); });",
+                  "const json = pm.response.json();",
+                  "pm.test('Error is BadRequestError', () => { pm.expect(json.error).to.eql('BadRequestError'); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{tokenReferente}}" }
+            ],
+            "url": "{{baseurl}}/assegnazioni/{{assegnazioneId}}"
+          }
+        },
+        {
+          "name": "Delete Assegnazione - Forbidden (Dipendente)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 403', () => { pm.response.to.have.status(403); });"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{tokenDipendente}}" }
+            ],
+            "url": "{{baseurl}}/assegnazioni/000000000000000000000000"
           }
         }
       ]
