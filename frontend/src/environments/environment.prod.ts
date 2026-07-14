@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://esame-t3ku.onrender.com/api'
+  apiUrl: 'https://app-nicolo-tonin.onrender.com/api'
 };
